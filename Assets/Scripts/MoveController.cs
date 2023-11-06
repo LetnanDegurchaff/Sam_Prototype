@@ -1,10 +1,10 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(CharacterController))]
 public class MoveController : MonoBehaviour
 {
     [SerializeField] private float _speed = 2;
+    [SerializeField] private float _jumpSpeed = 650;
 
     private CharacterController _characterController;
 
@@ -35,11 +35,11 @@ public class MoveController : MonoBehaviour
         _verticalSpeed = _gravityAcceleration;
     }
 
-    public void TryJump(float jumpSpeed)
+    public void TryJump()
     {
         if (_characterController.isGrounded)
         {
-            _verticalSpeed = jumpSpeed;
+            _verticalSpeed = _jumpSpeed;
         }
     }
 }

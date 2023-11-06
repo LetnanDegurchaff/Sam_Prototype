@@ -1,25 +1,18 @@
 using UnityEngine;
 
 [RequireComponent(typeof(MoveController))]
+[RequireComponent(typeof(CameraController))]
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private float _rotateSpeed = 10;
-    [SerializeField] private float _jumpSpeed = 650;
-
     private PlayerInput _playerInput;
     private MoveController _moveController;
-    private Camera _camera;
-
-    private float _cameraMaxRotation = 90f;
-    private float _cameraMinRotation = -90f;
-    private float _verticalRotation = 0;
-    private Vector2 _lookInputVector = Vector2.zero;
+    private CameraController _cameraController;
 
     private void Awake()
     {
         _playerInput = new PlayerInput();
         _moveController = GetComponent<MoveController>();
-        _camera = Camera.main;
+        _cameraController = GetComponent<CameraController>();
     }
 
     private void OnEnable()
@@ -39,21 +32,9 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        RotateLook();
+        _cameraController.RotateGaze(_playerInput.Player.Look.ReadValue<Vector2>());
 
         if (Input.GetKeyDown(KeyCode.Space))
-            _moveController.TryJump(_jumpSpeed);
-    }
-
-    private void RotateLook()
-    {
-        _lookInputVector = _playerInput.Player.Look.ReadValue<Vector2>() * _rotateSpeed * Time.deltaTime;
-
-        transform.Rotate(Vector3.up * _lookInputVector.x);
-
-        _verticalRotation -= _lookInputVector.y;
-        _verticalRotation = Mathf.Clamp(_verticalRotation, _cameraMinRotation, _cameraMaxRotation);
-
-        _camera.transform.localRotation = Quaternion.Euler(_verticalRotation, 0, 0);
+            _moveController.TryJump();
     }
 }
